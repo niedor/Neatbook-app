@@ -46,7 +46,7 @@ function DisplayEvents({month, day}){
     );
 }
 
-export default function EventsScreen(){
+export default function Events(){
     const [eventName, setEventName] = React.useState('');
     const [eventMonth, setEventMonth] = React.useState(0);
     const [eventDay, setEventDay] = React.useState(0);

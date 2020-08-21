@@ -5,7 +5,7 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
 
-export default function AllEntriesPage(){
+export default function AllEntries(){
     const [allJournals, setArray] = React.useState(null);
 
     React.useEffect(() => {

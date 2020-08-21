@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Modal, Dimensions} from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableHighlight, View, Dimensions} from 'react-native';
 import { Icon } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
-import { Button } from '@ui-kitten/components';
+import { Button, Modal, Drawer, DrawerGroup } from '@ui-kitten/components';
 
 //This is a long-term to do list as of now. Might consider adjusting it so that the list clears everyday and any incompleted
 //tasks are saved in another file.
@@ -13,14 +13,15 @@ const low = "#F8D763";
 const medium = "#EAA800";
 const high = "#875500";
 
-function Items({ done: doneHeading, onPressItem }) { //this way of declaring props is known as JS object destructuring
+//renders tasks (either todo or completed)
+function Items({ done, onPressItem }) { //this way of declaring props is known as JS object destructuring
   const [items, setItems] = React.useState(null);
 
   React.useEffect(() => {
     db.transaction(tx => {
       tx.executeSql(
         `select * from items where done = ?;`,
-        [doneHeading ? 1 : 0],
+        [done ? 1 : 0],
         (_, { rows: { _array } }) => setItems(_array)
       );
     });
@@ -32,7 +33,8 @@ function Items({ done: doneHeading, onPressItem }) { //this way of declaring pro
 
   return (
     <View style={styles.sectionContainer}>
-      {items.map(({ id, done, value, priority }) => (
+      {items.map(({ id, done, value, priority }) => {
+        return (
         <TouchableOpacity
           key={id}
           onPress={() => onPressItem && onPressItem(id)}
@@ -42,29 +44,32 @@ function Items({ done: doneHeading, onPressItem }) { //this way of declaring pro
             marginVertical: 6,
             borderRadius: 12,
           }}>
-          <Text style={{ color: done ? "white" : "#000", fontSize: 15}}>{value}</Text>
-          <Text style={{ color: priority ? medium : low }}>PRIORITY LEVEL</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon name = "circle" type = "font-awesome" size = {15} color={priority}/>
+            <Text style={{ color: done ? "white" : "#000", fontSize: 15, marginLeft: 10}}>{value}</Text>
+          </View>
         </TouchableOpacity>
-      ))}
+        )
+        })}
     </View>
   );
 }
 
 export default function App() {
+  let priority;
   const [text, setText] = React.useState(null);
-  const [priority, setPriority] = React.useState(null);
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [addModal, setAddModal] = React.useState(false);
 
   React.useEffect(() => {
     db.transaction(tx => {
       tx.executeSql(
-        "create table if not exists items (id integer primary key not null, done int, value text, priority int);"
+        "create table if not exists items (id integer primary key not null, done int, value text, priority text);"
       );
     });
   }, []);
 
-  const add = (text, priority) => {
+  const add = (text, priority, description) => {
     // is text empty?
     if (text === null || text === "") {
       return false;
@@ -82,56 +87,83 @@ export default function App() {
     );
   }
 
-const low = "#F8D763";
-const medium = "#EAA800";
-const high = "#875500";
+  const yellow = "#F8D763";
+  const orange = "#EAA800";
+  const red = "#875500";
 
-const addIcon = () => (
-  <Icon name="add" style={{color: "#33948F"}}/>
-);
+  const addIcon = () => (
+    <Icon name="add" color="#33948F"/>
+  );
+
+  const boxedAddIcon = () => (
+    <Icon name="plus-square-o" type="font-awesome" color="#82BDB8" style={{marginLeft: 30}}/> 
+  )
+
+  const priorityLevelsArray = [
+    {
+    id: 0,
+    color: yellow,
+    text: "low"
+    },
+    {
+    id: 1,
+    color: orange,
+    text: "medium"
+    },
+    {
+      id: 2,
+      color: red,
+      text: "high"
+    }
+  ];
 
   return (
     <View style={styles.container}>
-    <Modal transparent = {false} visible = {addModal}>
+    <Modal transparent = {true} visible = {addModal}>
       <View style = {styles.modalContainer}>
-        <Text style={styles.modalHeading}>What do you need to do today?</Text>
+        <TouchableOpacity
+          onPress={() => setAddModal(!addModal)}>
+            <Icon name="close" color="#82BDB8" style={{alignSelf: 'flex-end', marginRight: 15, marginTop: 15}}/>
+        </TouchableOpacity>
+        <Text style={styles.modalHeading}>Create New Task</Text>
+        <Text style={{color: "#82BDB8", marginLeft: 38, marginTop: 20}}>Name</Text>
         <TextInput
           onChangeText={text => setText(text)}
-          onSubmitEditing={() => {
-            add(text);
-            setText(null);
-            setAddModal(!addModal);
-          }}
-          placeholder="Tap here to continue..."
           style={styles.input}
           value={text}
         />
-        <View style={{flexDirection:'row'}}>
-          <Text style={styles.priorityLabel}>Choose a priority level: </Text>
-          <View>
-            <Button size="tiny" style={[styles.priorityButton, {backgroundColor: low}]} 
-                onPress={() => {
-                  setPriority(0);
-                }}>Low</Button>
-            <Button size="tiny" style={[styles.priorityButton, {backgroundColor: medium}]}
-                onPress={() => {
-                  setPriority(1);
-                }}>Medium</Button>
-            <Button size="tiny" style={[styles.priorityButton, {backgroundColor: high}]}
-                onPress={() => {
-                  setPriority(2);
-                }}>High</Button>
-          </View>
+        <Text style={styles.priorityLabel}>Choose a priority level: </Text>
+        <View style={{flexDirection:'row', justifyContent: 'center'}}>
+          {priorityLevelsArray.map(({id, color, text}) => (
+            <TouchableHighlight
+              key={id}
+              style={styles.priorityButton}
+              onPress={() => priority = color}
+              underlayColor="#D4E9E7">
+                <View style={{flexDirection: 'row', marginTop: 5}}>
+                  <Icon name = "circle" type = "font-awesome" size = {12} color={color} style={{marginHorizontal: 5}}/>
+                  <Text style={{fontSize: 12, color: "#33948F", justifyContent: 'center'}}>{text}</Text>
+                </View>
+              </TouchableHighlight>
+          ))}
         </View>
-        <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-          <Button onPress={() => setAddModal(!addModal)}
-                  style={styles.modalButton}>Cancel</Button>
-          <Button onPress={() => {
-            add(text, priority);
-            setText(null);
-            setAddModal(!addModal);
-          }} style={styles.modalButton}>Add</Button>
-        </View>
+        <Drawer style={{backgroundColor: "#33948F"}}>
+          <DrawerGroup style={styles.modalDrawer} 
+                       title={() => (<Text style={{color: "#82BDB8"}}>Add Time</Text>)}
+                       accessoryLeft={boxedAddIcon}>
+            <TextInput />
+          </DrawerGroup>
+        </Drawer>
+            
+          <TouchableOpacity 
+              onPress={() => {
+                add(text, priority);
+                setText(null);
+                setAddModal(!addModal);
+              }} 
+              style={styles.modalButton}>
+            <Text style={{color: "#33948F", marginLeft: 19, marginTop: 9}}>CREATE TASK</Text>
+          </TouchableOpacity>
       </View>
     </Modal>
     <ScrollView horizontal={true}>
@@ -191,20 +223,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     flex: 1,
-    height: height*.7,
-    //paddingTop: Constants.statusBarHeight
-  },
-  input: {
-    height: 40,
-    margin: 16,
-    padding: 8
   },
   listArea: { //to do container
     backgroundColor: "rgba(51, 148, 143, 0.16)",
     flex: 1,
     paddingTop: 16,
     width: width*.8,
-    height: height*.65,
+    height: height*.53,
     alignSelf: 'center',
     borderRadius: 15,
     marginVertical: height*.02,
@@ -229,36 +254,52 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     borderRadius: 25,
-    backgroundColor: "rgba(51, 148, 143, 0.16)",
-    marginVertical: height*.15,
-    marginHorizontal: width*.08,
-    height: height*.7,
+    backgroundColor: "#33948F",
+    height: 417,
+    width: 310
   }, 
   modalHeading: {
+    color: "#91DBD4",
     textAlign: 'center',
-    fontSize: 20,
-    fontFamily: 'gafata-regular',
-    marginTop: height*.05,
+    fontSize: 26,
     marginHorizontal: width*.05,
+  },
+  input: {
+    alignSelf: 'center',
+    width: 233,
+    height: 20,
+    fontSize: 18,
+    marginTop: 5,
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#82BDB8",
+    color: "#91DBD4",
   },
   modalButton: {
-    width: 88,
-    height: 40,
-    marginTop: 55,
-    marginHorizontal: 15,
+    width: 130,
+    height: 38,
+    borderRadius: 20,
+    backgroundColor: '#D4E9E7',
+    alignSelf: 'center',
+    marginBottom: 30
   },
   priorityLabel: {
+    color: "#82BDB8",
     fontSize: 15,
     textAlign: 'center',
-    color: 'grey',
-    marginBottom: 5,
-    marginHorizontal: width*.05,
-    paddingTop: 5
+    marginTop: 15,
+    marginBottom: 10,
   },
   priorityButton: {
-    marginVertical: 5,
+    margin: 10,
     width: width*.2,
-    alignSelf: 'flex-end',
+    height: 23,
     borderColor: 'transparent',
+    borderRadius: 15,
+    backgroundColor: "#D4E9E7",
+  },
+  modalDrawer: {
+    backgroundColor: "#33948F",
+    marginVertical: -3
   }
 });

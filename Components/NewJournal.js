@@ -1,51 +1,16 @@
 import React from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, Modal, Dimensions} from 'react-native';
-import { Button } from '@ui-kitten/components';
+import { View, Text, TextInput, ScrollView, StyleSheet, Modal, Dimensions, Icon, TouchableOpacity} from 'react-native';
+import { Button, Drawer } from '@ui-kitten/components';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
-
-//this is just a test
-function DisplayEntries(){
-    const [allJournals, setAllJournals] = React.useState('');
-
-    React.useEffect(() => {
-        db.transaction(tx => {
-            tx.executeSql(
-                `SELECT * FROM journals`,
-                [],
-                ({ rows: { _array }}) => setAllJournals(_array) 
-            );
-        });
-    })
-
-    if (allJournals === null || allJournals === ''){
-        return(
-            <View>
-                <Text>Make your first entry!</Text>
-            </View>
-        )
-    }
-
-    return(
-        <ScrollView>
-            <View>
-                {allJournals.map(({id, entry}) => (
-                    <View
-                        key={id}>
-                        <Text>{entry}</Text>
-                    </View>
-                ))}
-            </View>
-        </ScrollView>
-    )
-}
 
 export default function NewJournal({navigation}){
     const [showModal, setShowModal] = React.useState(false);
     const [entry, setEntry] = React.useState('');
     const [forceUpdate, forceUpdateId] = useForceUpdate();
 
+    //creates table to store journal entries
     React.useEffect(() => {
         db.transaction(tx => {
             tx.executeSql(
@@ -54,6 +19,7 @@ export default function NewJournal({navigation}){
         });
     }, []);
 
+    //adds journal entry to database
     const add = (entry) => {
         if (entry === null || entry === ('')){
             return null;
@@ -63,7 +29,7 @@ export default function NewJournal({navigation}){
         let year = today.getFullYear();
         let month = today.getMonth();
         let day = today.getDate();
-        //add time later
+        //add time
 
         db.transaction(
             tx => {
@@ -76,6 +42,10 @@ export default function NewJournal({navigation}){
 
     return(
         <View style={styles.container}>
+            <TouchableOpacity onPress={navigation.navigate('All Journals')}>
+                <Text>close</Text>
+            </TouchableOpacity>
+            <Text style={{alignSelf: 'center', fontSize: 20}}>What's on your mind today?</Text>
             <TextInput
                 onChangeText={text => setEntry(text)}
                 style={styles.body}
@@ -91,8 +61,6 @@ export default function NewJournal({navigation}){
                         SAVE
                     </Button>
             </View>
-            <DisplayEntries 
-                key={`journal-${forceUpdateId}`}/>
             <Modal visible = {showModal} transparent={true}>
                 <View style = {styles.modal}>
                     <Text style={styles.modalText}>
@@ -121,7 +89,7 @@ const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "#D4E9E7"
     },
     header:{
         fontSize: 26,
