@@ -4,6 +4,7 @@ import { Button } from '@ui-kitten/components';
 import * as SQLite from 'expo-sqlite';
 import { Icon } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
+import getMonthText from './getMonthText';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -13,7 +14,7 @@ function DisplayEvents({month, day}){
     React.useEffect(() => {
         db.transaction(tx => {
           tx.executeSql(
-            `select * from allEvents where month = ? and day = ?;`,
+            "SELECT * FROM allEvents WHERE month = ? and day = ?;",
             [month, day],
             (_, { rows: { _array } }) => setList(_array)
           );
@@ -36,9 +37,11 @@ function DisplayEvents({month, day}){
                 {listOfEvents.map(({id, name, description}) => ( //implicit return when using parentheses instead of brackets
                         <View 
                             key={id}
-                            style={{marginBottom: 25}}>
-                            <Text style={[styles.eventName, {paddingBottom: 3}]}>{name}</Text>
-                            <Text style={styles.eventDescription}>{description}</Text>
+                            style={styles.singleEventContainer}>
+                            <View style={styles.eventTextContainer}>
+                                <Text style={[styles.eventName, {paddingBottom: 3}]}>{name}</Text>
+                                <Text style={styles.eventDescription}>{description}</Text>
+                            </View>
                         </View>
                 ))}
             </View>
@@ -186,7 +189,7 @@ export default function Events(){
             </Modal>
             <ScrollView horizontal={true} style={{marginVertical: height*.02}}>
                 <View style={styles.dayContainer}>
-                    <Text style={styles.dayHeading}>{getDayOfWeek(dayNum)}</Text>
+                    <Text style={styles.dayHeading}>{`Today, ${getMonthText(getDate(currentMonth, currentDay)[0] - 1)} ${getDate(currentMonth, currentDay)[1]}`}</Text>
                     <DisplayEvents 
                             key={`event-${forceUpdateId}`}
                             month={getDate(currentMonth, currentDay)[0]}
@@ -257,28 +260,29 @@ const width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white",
-        paddingBottom: 30,
-        paddingTop: 10
     },
     dayContainer: {
         flex: 1,
-        marginHorizontal: 30,
-        width: width - 60,
+        width: width*.9,
         height: height*.65,
-        borderRadius: 25,
-        backgroundColor: "rgba(51, 148, 143, 0.16)"
+        backgroundColor: "rgba(51, 148, 143, 0.16)",
     },
     dayHeading: {
-        marginTop: 15,
-        textAlign: 'center',
-        fontSize: 24,
-        fontFamily: 'gafata-regular',
+        color: "#D4E9E7",
+        textAlign: "center",
+        fontSize: 20,
+        marginTop: 30,
     },
-    listArea: {
-        margin: 15,
-        paddingBottom: 200,
-        borderRadius: 25,
+    singleEventContainer:{
+        backgroundColor: "white", 
+        opacity: .74,
+        borderRadius: 20,
+        height: height*.08,
+        width: width*.8
+    },
+    eventTextContainer:{
+        margin: 10,
+        marginLeft: 20,
     },
     eventName: {
         fontSize: 18,

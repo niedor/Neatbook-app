@@ -8,6 +8,7 @@ import {default as theme} from './custom-theme.json';
 import Today from './Components/Today';
 import NewJournal from './Components/NewJournal';
 import AllJournals from './Components/AllJournals';
+import Calendar from './Components/Calendar';
 
 //const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -20,6 +21,7 @@ export default class App extends React.Component{
             <NavigationContainer >
                 <Drawer.Navigator initialRouteName="Today">
                     <Drawer.Screen name = "Today" component = {Today}/>
+                    <Drawer.Screen name = "Calendar" component = {Calendar}/>
                     <Drawer.Screen name = "New Journal" component = {NewJournal}/>
                     <Drawer.Screen name = "All Journals" component = {AllJournals}/>
                 </Drawer.Navigator>
