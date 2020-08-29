@@ -5,10 +5,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import {default as theme} from './custom-theme.json';
-import Today from './Components/Today';
-import NewJournal from './Components/NewJournal';
-import AllJournals from './Components/AllJournals';
-import Calendar from './Components/Calendar';
+import Today from './Components/Today/Today';
+import NewJournal from './Components/Journal/NewJournal';
+import AllJournals from './Components/Journal/AllJournals';
+import Calendar from './Components/Calendar/Calendar';
+import Home from './Components/Home'
 
 //const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -19,7 +20,7 @@ export default class App extends React.Component{
         return(
             <ApplicationProvider {...eva} theme={{...eva.light, ...theme}}>
             <NavigationContainer >
-                <Drawer.Navigator initialRouteName="Today">
+                <Drawer.Navigator initialRouteName="Home">
                     <Drawer.Screen name = "Today" component = {Today}/>
                     <Drawer.Screen name = "Calendar" component = {Calendar}/>
                     <Drawer.Screen name = "New Journal" component = {NewJournal}/>
