@@ -3,9 +3,8 @@ import {StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView} from '
 import { Icon } from 'react-native-elements';
 import { Button, Divider} from '@ui-kitten/components';
 import BigCircleSvg from './SvgCollection';
-import TodoForm from './TodoForm';
-import EventPage from './EventPage';
-import getMonth from './getMonthText'; //function to get name of month
+import TodoList from './TodoList';
+import getMonth from './getMonthText';
 
 //ANOTHER THING TO ADD TO THIS APP: SET REMINDERS FOR MONTHLY/WEEKLY THINGS. EXAMPLE: CHECK BANK STATEMENT, WALK DOG AT A CERTAIN TIME, STRETCH AT A CERTAIN TIME, READ AT A CERTAIN TIME 
 
@@ -33,7 +32,7 @@ export default function Today({navigation}){
             <BigCircleSvg />
 
             <View>
-                <TodoForm/>
+                <TodoList />
             </View>
 
         </ScrollView>

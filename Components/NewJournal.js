@@ -14,7 +14,7 @@ export default function NewJournal({navigation}){
     React.useEffect(() => {
         db.transaction(tx => {
             tx.executeSql(
-                "CREATE TABLE if not exists journals (id integer primary key not null, entry text, year int, month int, day int);"
+                "CREATE TABLE if not exists JournalsTable (id integer primary key not null, entry text, year int, month int, day int);"
             );
         });
     }, []);
@@ -33,7 +33,7 @@ export default function NewJournal({navigation}){
 
         db.transaction(
             tx => {
-              tx.executeSql("INSERT INTO journals (entry, year, month, day) values (?, ?, ?, ?)", [entry, year, month, day], console.log("A row has been inserted into 'journals'"));
+              tx.executeSql("INSERT INTO JournalsTable (entry, year, month, day) VALUES (?, ?, ?, ?)", [entry, year, month, day], console.log("A row has been inserted into 'journals'"));
             },
             null,
             forceUpdate
@@ -42,38 +42,37 @@ export default function NewJournal({navigation}){
 
     return(
         <View style={styles.container}>
-            <TouchableOpacity onPress={navigation.navigate('All Journals')}>
-                <Text>close</Text>
-            </TouchableOpacity>
-            <Text style={{alignSelf: 'center', fontSize: 20}}>What's on your mind today?</Text>
-            <TextInput
-                onChangeText={text => setEntry(text)}
-                style={styles.body}
-                multiline={true}
-                placeholder={"What's on your mind?"}
-                value={entry}
-                />
-            <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-                <Button style={styles.button} onPress={() => {
-                    add(entry);
-                    setEntry(null);
-                    setShowModal(!showModal)}}>
-                        SAVE
+            <View style={styles.innerContainer}>
+                <Text style={styles.question}>What's on your mind today?</Text>
+                <ScrollView>
+                    <TextInput
+                        onChangeText={text => setEntry(text)}
+                        style={styles.textInput}
+                        multiline={true}
+                        placeholder={"Tap to continue..."}
+                        value={entry}
+                        />
+                    <Button style={styles.button} onPress={() => {
+                        add(entry);
+                        setEntry(null);
+                        setShowModal(!showModal)}}>
+                            SAVE
                     </Button>
+                </ScrollView>
+                <Modal visible = {showModal} transparent={true}>
+                    <View style = {styles.modal}>
+                        <Text style={styles.modalText}>
+                            Your entry has been saved. 
+                        </Text>
+                        <Button style = {styles.modalButton} onPress={() => {
+                            setShowModal(!showModal);
+                            navigation.navigate('All Journals');
+                            }}>
+                                CONTINUE
+                            </Button>
+                    </View>
+                </Modal>
             </View>
-            <Modal visible = {showModal} transparent={true}>
-                <View style = {styles.modal}>
-                    <Text style={styles.modalText}>
-                        Your entry has been saved. 
-                    </Text>
-                    <Button style = {styles.modalButton} onPress={() => {
-                        setShowModal(!showModal);
-                        navigation.navigate('All Journals');
-                        }}>
-                            CONTINUE
-                        </Button>
-                </View>
-            </Modal>
         </View>
     )
 } 
@@ -91,22 +90,29 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#D4E9E7"
     },
-    header:{
-        fontSize: 26,
+    innerContainer:{
+        marginTop: 60,
     },
-    body:{
+    question:{
+        color: 'grey',
+        alignSelf: 'center', 
+        fontSize: 20
+    },
+    textInput:{
         fontSize: 18,
-        marginVertical: 20,
-        //height: height*.4,
-        padding: 10,
-        paddingTop: 15,
+        marginVertical: 30,
+        height: height*.5,
+        padding: 20,
+        paddingTop: 20,
         borderRadius: 25,
-        backgroundColor: "rgba(51, 148, 143, 0.16)",
+        backgroundColor: "white",
+        opacity: .84,
         margin: 30,
     },
     button:{
         width: width*.25,
         borderRadius: 25,
+        alignSelf: 'center'
     },
     modal:{
         alignSelf: 'center',

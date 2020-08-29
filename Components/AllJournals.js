@@ -6,53 +6,79 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
 
-//Create a function component that creates a button to display each journal 
+function DisplayJournals(){
+    const [journals, setJournals] = React.useState(null);
 
-export default function allJournals({navigation}){
-    let allJournalsArray = [{title: "All Entries", page: "All Entries"}];
+    React.useEffect(() => {
+        db.transaction(tx => {
+            tx.executeSql(
+                "SELECT * FROM JournalsTable", [], (_, {rows: {_array}}) => setJournals(_array)
+            )
+        })
+    });
 
-    const renderItem = ({ item }) => (
-        <Button size = "giant" appearance="ghost" onPress={() => navigation.navigate('All Entries')}>
-            {item.title}
-        </Button>
-    );
+    if (journals === null || journals.length === 0){
+        return(
+            <View>
+                <Text style={styles.nullMessage}>Write your first journal entry today!</Text>
+            </View>
+        )
+    }
 
-    const renderIcon = (props) => (
-        <Icon {...props} 
-            name='arrow-ios-forward-outline'
-        />
-    );
+    return(
+        <View>
+            {journals.map(({id, entry, year, month, day}) => {
+                    <TouchableOpacity key={id}>
+                        <Text>{entry}</Text>
+                        <Text>{`${month} ${day}, ${year}`}</Text>
+                    </TouchableOpacity>
+            })}
+        </View>
+    )
+}
+
+export default function AllJournals({navigation}){
 
     return(
         <View style={styles.container}>
-            <View style={styles.page}>
-                <Button style={styles.button} onPress={() => navigation.navigate('New Journal')}>NEW JOURNAL</Button> 
-                <List 
-                    data={allJournalsArray}
-                    renderItem={renderItem}
-                    contentContainerStyle={styles.contentContainer}
-                    accessoryRight={renderIcon}
-                    />
+            <View style={styles.innerContainer}>
+                <Text style={styles.header}>All Journals</Text>
+                <Button onPress={() => navigation.navigate("New Journal")}>
+                    Add Entry
+                </Button>
+                <DisplayJournals />
             </View>
         </View>
-    );
+    )
 }
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-    container: {
+    container:{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: "#33948F"
     },
-    button: {
-        marginTop: height*.02,
-        height: height*.07,
-        width: width*.4,
-        backgroundColor: "#33948F",
+    innerContainer:{
+        backgroundColor: "#D4E9E7",
+        borderRadius: 15,
+        width: width*.8,
+        height: height*.8,
         alignSelf: 'center',
-        marginBottom: 15,
-        borderRadius: 25
+        marginTop: height*.1
     },
+    header:{
+        fontSize: 25,
+        textAlign: 'center',
+        margin: 15,
+    },
+    nullMessage:{
+        color: 'grey',
+        textAlign: 'center',
+        fontSize: 20,
+        marginTop: height*.2,
+        marginHorizontal: 15,
+        flexWrap: 'wrap'
+    }
 })
