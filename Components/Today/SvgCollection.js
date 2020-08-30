@@ -9,7 +9,6 @@ export default function BigCircleSvg(){
     let greeting;
     let subGreeting;
 
-    //assigns the displayed greeting depending on the time of day
     //FOR UPDATE: more greetings
     let timeOfDay = today.getHours();
 

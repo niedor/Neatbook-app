@@ -6,8 +6,7 @@ import BigCircleSvg from './SvgCollection';
 import TodoList from './TodoList';
 import getMonth from '../getMonthText';
 
-//ADD FEATURE: SET REMINDERS FOR MONTHLY/WEEKLY THINGS. EXAMPLE: CHECK BANK STATEMENT, WALK DOG AT A CERTAIN TIME, STRETCH AT A CERTAIN TIME, READ AT A CERTAIN TIME 
-
+//add feature: set reminders for monthly/weekly tasks. example: check bank statement, walk dog at a certain time, stretch at a certain time, read at a certain time
 export default function Today({navigation}){
     let today = new Date();
     let monthNum = today.getMonth();

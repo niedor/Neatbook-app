@@ -18,7 +18,7 @@ export default function AddEventModal(props){
   
           db.transaction(
             tx => {
-              tx.executeSql("insert into allEvents (name, month, day, description) values (?, ?, ?, ?)", [name, month, day, description]);
+              tx.executeSql("INSERT INTO allEvents (name, month, day, description) VALUES (?, ?, ?, ?)", [name, month, day, description]);
             },
             null,
             props.forceUpdate

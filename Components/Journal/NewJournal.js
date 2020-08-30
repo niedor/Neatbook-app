@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, Modal, Dimensions, Icon, TouchableOpacity} from 'react-native';
-import { Button, Drawer } from '@ui-kitten/components';
+import { View, Text, TextInput, ScrollView, StyleSheet, Modal, Dimensions } from 'react-native';
+import { Button } from '@ui-kitten/components';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
@@ -10,7 +10,6 @@ export default function NewJournal({navigation}){
     const [entry, setEntry] = React.useState('');
     const [forceUpdate, forceUpdateId] = useForceUpdate();
 
-    //creates table to store journal entries
     React.useEffect(() => {
         db.transaction(tx => {
             tx.executeSql(
@@ -19,7 +18,6 @@ export default function NewJournal({navigation}){
         });
     }, []);
 
-    //adds journal entry to database
     const add = (entry) => {
         if (entry === null || entry === ('')){
             return null;

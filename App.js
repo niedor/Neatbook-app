@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import {default as theme} from './custom-theme.json';
 import Today from './Components/Today/Today';
@@ -11,7 +10,6 @@ import AllJournals from './Components/Journal/AllJournals';
 import Calendar from './Components/Calendar/Calendar';
 import Home from './Components/Home'
 
-//const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default class App extends React.Component{

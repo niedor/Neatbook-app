@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableHighlight, View, Dimensions} from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions} from 'react-native';
 import { Icon } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
-import { Button, Modal, Drawer, DrawerGroup } from '@ui-kitten/components';
+import { Button } from '@ui-kitten/components';
 import AddTaskModal from './addTaskModal';
-import { getReminderAsync } from 'expo-calendar';
 
-//CODE FINALLY WORKED, I JUST HAD TO CREATE A NEW TABLE AFTER I CHANGED THE COLUMN NAMES
 //This is a long-term to do list as of now. Might consider adjusting it so that the list clears everyday and any incompleted
 //tasks are saved in another file.
 
 const db = SQLite.openDatabase("db.db");
 
-//renders tasks (either todo or completed)
-function Items({ done, onPressItem }) { //this way of declaring props is known as JS object destructuring
+function Items({ done, onPressItem }) { 
   const [items, setItems] = React.useState(null);
 
   React.useEffect(() => {
@@ -59,6 +56,8 @@ function Items({ done, onPressItem }) { //this way of declaring props is known a
   );
 }
 
+//first component:
+//majority of function adapted from https://github.com/expo/examples/blob/master/with-sqlite/App.js during learning phase
 export default function TodoList() {
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [addModal, setAddModal] = React.useState(false);
@@ -72,7 +71,7 @@ export default function TodoList() {
   }, []);
 
   const addTask = (text, priority) => {
-    // is text empty?
+
     if (text === null || text === "") {
       return false;
     }

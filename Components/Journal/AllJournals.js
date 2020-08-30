@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
-//import {Button} from 'react-native-elements';
 import { List, ListItem, Icon, Button } from '@ui-kitten/components';
 import * as SQLite from 'expo-sqlite';
 

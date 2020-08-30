@@ -128,7 +128,6 @@ export default function Events(props){
         return day;
     }
 
-    //returns Month and Day
     function getDate(month, day){ //HAVE NOT taken into account leap years
         if (month === 2){
             if (day > 28){

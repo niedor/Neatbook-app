@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Dimensions } from 'react-native';
 import { Calendar, Button } from '@ui-kitten/components';
 import Events from './Events';
 import AddEventModal from './AddEventModal';
 
 export default function CalendarAndEvents(){
-    const [showModal, setShowModal] = React.useState(false); //only way I know how to let child pass data to parent is pass setstate function
+    const [showModal, setShowModal] = React.useState(false);
 
     return(
         <View style={styles.container}>
