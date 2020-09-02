@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
-import { List, ListItem, Icon, Button } from '@ui-kitten/components';
+import {StyleSheet, Text, View, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
+import { Button } from '@ui-kitten/components';
+import { Icon } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
+import getMonthText from '../getMonthText';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -25,26 +27,37 @@ function DisplayJournals(){
     }
 
     return(
-        <View>
-            {journals.map(({id, entry, year, month, day}) => {
-                    <TouchableOpacity key={id}>
+        <ScrollView>
+            {journals.reverse().map(({ id, entry, year, month, day }) => (
+                    <TouchableOpacity key={id} style={styles.journalEntryContainer}>
+                        <Text style={styles.journalEntryDate}>{`${getMonthText(month)} ${day}, ${year}`}</Text>
                         <Text>{entry}</Text>
-                        <Text>{`${month} ${day}, ${year}`}</Text>
                     </TouchableOpacity>
-            })}
-        </View>
+            ))}
+        </ScrollView>
     )
 }
 
 export default function AllJournals({navigation}){
+    const addIcon = () => (
+        <Icon name="add" color="#33948F"/>
+    );
+
+    const menuIcon = () => (
+        <Icon name='menu' />
+    )
 
     return(
         <View style={styles.container}>
+            <Button style={styles.menuButton} appearance='ghost' accessoryLeft={menuIcon}
+                        onPress={() => {
+                            navigation.toggleDrawer();
+            }}/>
             <View style={styles.innerContainer}>
-                <Text style={styles.header}>All Journals</Text>
-                <Button onPress={() => navigation.navigate("New Journal")}>
-                    Add Entry
-                </Button>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.header}>Journals</Text>
+                    <Button appearance = "ghost" onPress={() => navigation.navigate("New Journal")} accessoryRight = {addIcon} style={{marginLeft: width*.1}}/>
+                </View>
                 <DisplayJournals />
             </View>
         </View>
@@ -59,25 +72,41 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#33948F"
     },
+    menuButton: {
+        alignSelf: 'flex-start',
+        marginVertical: 15,
+        marginHorizontal: 10
+    },
     innerContainer:{
         backgroundColor: "#D4E9E7",
         borderRadius: 15,
-        width: width*.8,
-        height: height*.8,
+        width: width*.85,
+        height: height*.82,
         alignSelf: 'center',
-        marginTop: height*.1
     },
     header:{
         fontSize: 25,
-        textAlign: 'center',
+        marginLeft: width*.3,
         margin: 15,
+        color: "#33948F"
     },
     nullMessage:{
-        color: 'grey',
-        textAlign: 'center',
+        color: "grey",
+        textAlign: "center",
         fontSize: 20,
         marginTop: height*.2,
         marginHorizontal: 15,
-        flexWrap: 'wrap'
+        flexWrap: "wrap"
+    },
+    journalEntryContainer: {
+        marginVertical: 15,
+        marginHorizontal: 25,
+        backgroundColor: "white",
+        borderRadius: 10,
+        padding: 10
+    },
+    journalEntryDate: {
+        color: "grey",
+        marginBottom: 5
     }
 })

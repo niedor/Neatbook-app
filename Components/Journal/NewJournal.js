@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, Modal, Dimensions } from 'react-native';
 import { Button } from '@ui-kitten/components';
+import { Icon } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
@@ -38,8 +39,16 @@ export default function NewJournal({navigation}){
         );
     };
 
+    const menuIcon = () => (
+        <Icon name='menu' />
+    )
+
     return(
         <View style={styles.container}>
+            <Button style={styles.menuButton} appearance='ghost' accessoryLeft={menuIcon}
+                        onPress={() => {
+                            navigation.toggleDrawer();
+            }}/>
             <View style={styles.innerContainer}>
                 <Text style={styles.question}>What's on your mind today?</Text>
                 <ScrollView>
@@ -88,8 +97,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#D4E9E7"
     },
-    innerContainer:{
-        marginTop: 60,
+    menuButton: {
+        alignSelf: 'flex-start',
+        marginTop: 15,
+        marginHorizontal: 10
     },
     question:{
         color: 'grey',
