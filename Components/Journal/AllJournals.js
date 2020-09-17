@@ -55,8 +55,8 @@ export default function AllJournals({navigation}){
             }}/>
             <View style={styles.innerContainer}>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.header}>Journals</Text>
-                    <Button appearance = "ghost" onPress={() => navigation.navigate("New Journal")} accessoryRight = {addIcon} style={{marginLeft: width*.1}}/>
+                    <Text style={styles.header}>All Entries</Text>
+                    <Button appearance = "ghost" onPress={() => navigation.navigate("Create New Journal")} accessoryRight = {addIcon} style={{marginLeft: width*.1, marginTop: 10}}/>
                 </View>
                 <DisplayJournals />
             </View>
@@ -86,8 +86,10 @@ const styles = StyleSheet.create({
     },
     header:{
         fontSize: 25,
-        marginLeft: width*.3,
-        margin: 15,
+        marginLeft: width*.275,
+        marginTop: 20,
+        marginBottom: 10,
+        marginHorizontal: 10,
         color: "#33948F"
     },
     nullMessage:{
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
         flexWrap: "wrap"
     },
     journalEntryContainer: {
-        marginVertical: 15,
+        marginVertical: 10,
         marginHorizontal: 25,
         backgroundColor: "white",
         borderRadius: 10,

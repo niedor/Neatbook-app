@@ -20,8 +20,6 @@ function DisplayEvents({month, day}){
     }, []);
 
     if (listOfEvents === null || listOfEvents.length === 0){
-        const height = Dimensions.get('window').height;
-
         return(
             <View style={[styles.listArea, {paddingBottom: 294}]}>
                 <Text style={styles.nullMessage}>You're free today!</Text>
@@ -59,7 +57,6 @@ function DisplayDateAndEvents(props){
         let month = props.getDate(currentMonth, currentDay + i)[0];
         let day = props.getDate(currentMonth, currentDay + i)[1];
 
-        //not diplaying properly
         singleDay = (
             <View style={styles.dayContainer} key={i}>
                 <Text style={styles.dayHeading}>{`${dayOfWeek}, ${getMonthText(month - 1)} ${day}`}</Text>
@@ -166,7 +163,8 @@ export default function Events(props){
                     currentMonth = {currentMonth}
                     currentDay = {currentDay}
                     forceUpdateId = {props.forceUpdateId} 
-                    getDayOfWeek = {getDayOfWeek}/>
+                    getDayOfWeek = {getDayOfWeek}
+                    dayNum = {dayNum}/>
             </ScrollView>
         </View>
     )
@@ -196,17 +194,20 @@ const styles = StyleSheet.create({
         opacity: .74,
         borderRadius: 20,
         height: height*.08,
-        width: width*.8
+        width: width*.8,
+        marginVertical: 5
     },
     eventTextContainer:{
-        margin: 10,
+        alignContent: 'center',
+        marginVertical: 8,
         marginLeft: 20,
     },
     eventName: {
-        fontSize: 18,
+        fontSize: 16,
+        marginBottom: -2
     },
     eventDescription: {
-        fontSize: 15,
+        fontSize: 13,
         color: 'grey',
     },
     nullMessage: {

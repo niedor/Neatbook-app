@@ -21,7 +21,7 @@ export default class App extends React.Component{
                 <Drawer.Navigator initialRouteName="Home">
                     <Drawer.Screen name = "Today" component = {Today}/>
                     <Drawer.Screen name = "Calendar" component = {Calendar}/>
-                    <Drawer.Screen name = "New Journal" component = {NewJournal}/>
+                    <Drawer.Screen name = "Create New Journal" component = {NewJournal}/>
                     <Drawer.Screen name = "All Journals" component = {AllJournals}/>
                 </Drawer.Navigator>
             </NavigationContainer>

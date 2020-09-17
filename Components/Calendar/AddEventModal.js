@@ -5,6 +5,7 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
 
+// if the state is changed in a subcomponent, will the parent component be re-rendered?
 export default function AddEventModal(props){
     const [eventName, setEventName] = React.useState('');
     const [eventMonth, setEventMonth] = React.useState(0);
