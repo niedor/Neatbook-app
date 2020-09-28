@@ -9,6 +9,7 @@ import NewJournal from './Components/Journal/NewJournal';
 import AllJournals from './Components/Journal/AllJournals';
 import Calendar from './Components/Calendar/Calendar';
 import Home from './Components/Home'
+import Goals from './Components/Goals';
 
 const Drawer = createDrawerNavigator();
 
@@ -18,7 +19,8 @@ export default class App extends React.Component{
         return(
             <ApplicationProvider {...eva} theme={{...eva.light, ...theme}}>
             <NavigationContainer >
-                <Drawer.Navigator initialRouteName="Home">
+                <Drawer.Navigator initialRouteName="Goals">
+                    <Drawer.Screen name = "Goals" component = {Goals}/>
                     <Drawer.Screen name = "Today" component = {Today}/>
                     <Drawer.Screen name = "Calendar" component = {Calendar}/>
                     <Drawer.Screen name = "Create New Journal" component = {NewJournal}/>
